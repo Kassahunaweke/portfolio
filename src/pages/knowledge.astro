@@ -1,0 +1,43 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+
+// TODO: replace with your real knowledge hub topics/notes
+const topics = [
+  {
+    title: "Groundwater Modelling",
+    description: "Add notes, tutorials, or resources on this topic.",
+  },
+  {
+    title: "Geostatistics",
+    description: "Add notes, tutorials, or resources on this topic.",
+  },
+  {
+    title: "Machine Learning",
+    description: "Add notes, tutorials, or resources on this topic.",
+  },
+  {
+    title: "Scientific Computing",
+    description: "Add notes, tutorials, or resources on this topic.",
+  },
+];
+---
+
+<MainLayout title="Knowledge Hub | Kassahun Aweke Arega">
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <section class="section">
+        <h2>Knowledge Hub</h2>
+        <div class="cards">
+          {topics.map((topic) => (
+            <div class="card">
+              <h3>{topic.title}</h3>
+              <p>{topic.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+</MainLayout>

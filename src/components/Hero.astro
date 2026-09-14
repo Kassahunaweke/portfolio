@@ -1,0 +1,24 @@
+---
+const slides = [
+  { src: "/images/hero/Recharge.png", alt: "Recharge realization" },
+  { src: "/images/hero/stochastic.png", alt: "Stochastic ln(K) field" },
+  { src: "/images/hero/Deeponet.png", alt: "DeepONet architecture" },
+  { src: "/images/hero/protection_area.png", alt: "Wellhead protection area" },
+];
+
+const secondsPerSlide = 5;
+const totalDuration = secondsPerSlide * slides.length;
+---
+
+<section class="hero" style={`--total-duration: ${totalDuration}s`}>
+  <div class="slideshow">
+    {slides.map((slide, i) => (
+      <img
+        class="slide"
+        src={slide.src}
+        alt={slide.alt}
+        style={`animation-delay: ${i * secondsPerSlide}s`}
+      />
+    ))}
+  </div>
+</section>

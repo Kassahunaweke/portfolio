@@ -1,0 +1,220 @@
+---
+// src/pages/cv.astro
+import MainLayout from "../layouts/MainLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+
+const education = [
+  {
+    date: "May 2025 – now",
+    degree: "PhD in Mineral Engineering",
+    school: "Polytechnique Montréal, Canada",
+    details: [
+      "Project: Geostatistical and Surrogate Approaches for Stochastic Recharge and Groundwater Modelling in the Harricana sub-Watershed, Abitibi–Témiscamingue",
+      "Relevant coursework: Geostatistics; Probabilistic Machine Learning; Hydrology; Project (Spatial Reconstruction of Annual Precipitation in the Upper Awash Basin, Ethiopia: A Comparison of Graph Convolutional Networks and Ordinary Kriging)",
+      "CGPA: 4.0/4.0",
+    ],
+  },
+  {
+    date: "Dec 2020 – Jul 2022",
+    degree: "MSc. in Geological Engineering (Hydrogeology)",
+    school: "Addis Ababa University",
+    details: [
+      "CGPA: 3.89/4.0",
+      "Thesis: Estimation of groundwater storage change using GRACE satellite data — \"Excellent MSc thesis\"",
+      "Relevant coursework: Groundwater hydrology, GIS, geostatistics, geophysics, contaminant transport modeling",
+    ],
+  },
+  {
+    date: "Sep 2014 – Jul 2018",
+    degree: "BSc in Geology",
+    school: "Woldia University",
+    details: [
+      "CGPA: 3.91/4.0 (\"Highest Distinction\")",
+      "Project: Impact of landslides on road infrastructure",
+    ],
+  },
+];
+
+const experience = [
+  {
+    date: "Mar 2023 – Dec 2024",
+    role: "Head, Department of Geology",
+    org: "Dire Dawa University, Dire Dawa, Ethiopia",
+    details: [
+      "Led academic and administrative activities within the department",
+      "Coordinated fieldwork, research initiatives, and collaborations",
+    ],
+  },
+  {
+    date: "Jul 2022 – Aug 2025",
+    role: "Lecturer, Department of Geology",
+    org: "Dire Dawa University, Dire Dawa, Ethiopia",
+    details: [
+      "Taught Environmental Geology and Groundwater Resources Management",
+      "Supervised fieldwork and student research projects",
+    ],
+  },
+  {
+    date: "Sep 2019 – Sep 2020",
+    role: "Graduate Assistant, Department of Geology",
+    org: "Dire Dawa University",
+    details: [
+      "Contributed to department establishment, curriculum development, and lab organization",
+    ],
+  },
+];
+
+const skills = [
+  "Python (NumPy, Pandas, SciPy, Matplotlib, PyTorch)",
+  "QGIS", "ArcGIS", "LaTeX",
+  "Groundwater recharge modelling",
+  "MODFLOW", "Flopy",
+  "Geostatistics (variogram modelling, TBM, SGS, MPS)",
+  "Inversion (PEST, ES-MDA, Kalman filter)",
+  "Monte-Carlo methods",
+  "Machine learning & deep learning",
+];
+
+const awards = [
+  "Google Data Analytics",
+  "Coursera Machine Learning",
+  "Spatial Data Analysis",
+  "Project Management",
+  "Outstanding Undergraduate Student (4.0/4.0)",
+];
+
+const publications = [
+  {
+    text: "Arega, K.A., Birhanu, B., Ali, S. et al. Analysis of spatiotemporal variability of groundwater storage in Ethiopia using Gravity Recovery and Climate Experiment (GRACE) data. Environ Earth Sci 83, 206 (2024).",
+    link: "https://doi.org/10.1007/s12665-024-11508-2",
+  },
+];
+
+const presentations = [
+  "Poster Presentation: Stochastic groundwater recharge modelling in the Harricana river sub-watershed, Quebec; IAH-CGU joint meeting, May 2026, Halifax, Canada.",
+  "The Power of Satellite Missions to Monitor Hydro-Climatic Conditions of the Earth. Seminar presentation, College of Natural and Computational Sciences, Dire Dawa University, May 2023.",
+  "Analysis of Spatiotemporal Variability of Groundwater Storage in Ethiopia Using GRACE Data. Oral presentation at the 5th Research and Fair Week, Addis Ababa University, May 2024.",
+  "Groundwater Suitability and Hydrogeological Mapping for Climate-Resilient WASH Services in Ethiopia. Oral presentation at the project validation workshop, Ministry of Water and Energy, Adama, Ethiopia, February 2025. Project funded by UNICEF, with British Geological Survey, Aquacon Engineering PLC, and Acacia Water.",
+];
+
+const projectParticipation = [
+  "Contributed to the development and validation of interactive workshops and numerical exercises for the French open educational resource (fabriqueREL) in applied geostatistics.",
+  "Contributed to hydrogeological mapping for the Climate-Resilient WASH project in SNNPR, Ethiopia, using remote sensing, GIS, and geophysical surveys (USAID-funded).",
+  "Participated in field investigations for the \"Climate Change Impact on Groundwater in Ethiopia – Managed Aquifer Recharge (MAR) Assessment\" project (BRGM).",
+  "Contributed to groundwater suitability mapping for the \"Feasibility Study and Design of the Dire Dawa Managed Aquifer Recharge (MAR)\" project (World Bank-funded).",
+];
+
+const memberships = [
+  "International Association of Hydrogeologists (IAH)",
+  "Technical Member, Groundwater Relief, UK",
+  "Canadian Geophysical Union (CGU), Canada",
+  "International Association for Mathematical Geosciences (IAMG)",
+];
+---
+
+<MainLayout title="CV | Kassahun Aweke Arega">
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <section class="section">
+        <h2>Curriculum Vitae</h2>
+
+        <p class="cv-intro">
+          PhD researcher in hydrogeology at Polytechnique Montréal specializing in stochastic
+          groundwater modelling and inversion, uncertainty quantification, geostatistics, and
+          surrogate modelling. Published researcher with university teaching and leadership
+          experience, and practical consulting contributions to groundwater resource assessment
+          and managed aquifer recharge projects supported by international organizations.
+        </p>
+
+        <div class="buttons" style="justify-content:center; margin-bottom:60px;">
+          <a href="/CV_Arega_2026.pdf" class="btn btn-primary" download>
+            Download Full CV (PDF)
+          </a>
+        </div>
+
+        <div class="cv-section">
+          <h3>Education</h3>
+          {education.map((item) => (
+            <div class="cv-entry">
+              <div class="cv-date">{item.date}</div>
+              <div class="cv-details">
+                <h4>{item.degree}</h4>
+                <p class="cv-sub">{item.school}</p>
+                <ul>
+                  {item.details.map((d) => <li>{d}</li>)}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="cv-section">
+          <h3>Professional Experience</h3>
+          {experience.map((item) => (
+            <div class="cv-entry">
+              <div class="cv-date">{item.date}</div>
+              <div class="cv-details">
+                <h4>{item.role}</h4>
+                <p class="cv-sub">{item.org}</p>
+                <ul>
+                  {item.details.map((d) => <li>{d}</li>)}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="cv-section">
+          <h3>Technical Skills</h3>
+          <div class="tag-list">
+            {skills.map((skill) => <span class="tag">{skill}</span>)}
+          </div>
+        </div>
+
+        <div class="cv-section">
+          <h3>Publications</h3>
+          <ul class="simple-list">
+            {publications.map((pub) => (
+              <li>
+                {pub.text} <a href={pub.link} target="_blank" rel="noopener">{pub.link}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="cv-section">
+          <h3>Conference &amp; Professional Presentations</h3>
+          <ul class="simple-list">
+            {presentations.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+
+        <div class="cv-section">
+          <h3>Project Participation</h3>
+          <ul class="simple-list">
+            {projectParticipation.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+
+        <div class="cv-section">
+          <h3>Accomplishments &amp; Awards</h3>
+          <ul class="simple-list">
+            {awards.map((a) => <li>{a}</li>)}
+          </ul>
+        </div>
+
+        <div class="cv-section">
+          <h3>Memberships</h3>
+          <ul class="simple-list">
+            {memberships.map((m) => <li>{m}</li>)}
+          </ul>
+        </div>
+
+        <p style="text-align:center; color:#555;">
+          References available upon request.
+        </p>
+      </section>
+    </div>
+  </div>
+</MainLayout>
