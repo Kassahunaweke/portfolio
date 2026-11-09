@@ -109,4 +109,4 @@ Sometimes it begins with a child following cattle to a river.
 
 And sometimes, years later, that child becomes a hydrogeologist and realizes:
 
-**I had been watching groundwater stories long before I knew what groundwater was.**
+**I had been watching groundwater stories long before I knew what groundwater was !**
