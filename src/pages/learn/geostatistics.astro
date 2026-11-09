@@ -1,0 +1,422 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+import { text } from "../../i18n/geostatistics";
+
+// Page is rendered in English; the script swaps in Amharic if chosen.
+const T = text.en;
+const tex = (s: string, display = false) =>
+  katex.renderToString(s, { displayMode: display, throwOnError: false });
+
+const eq = {
+  l1a: tex(String.raw`h = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}`, true),
+  l1b: tex(String.raw`\Delta z = \left| z_1 - z_2 \right|`, true),
+  l2: tex(
+    String.raw`\gamma(h) = \frac{1}{2\,N(h)} \sum_{i=1}^{N(h)} \big[\, z(\mathbf{x}_i) - z(\mathbf{x}_i + h) \,\big]^2`,
+    true,
+  ),
+  spherical: tex(
+    String.raw`\gamma(h) = \begin{cases} c_0 + (s - c_0)\left[\dfrac{3h}{2a} - \dfrac{h^3}{2a^3}\right] & h \le a \\[6pt] s & h > a \end{cases}`,
+    true,
+  ),
+  exponential: tex(
+    String.raw`\gamma(h) = c_0 + (s - c_0)\left[\,1 - e^{-3h/a}\,\right]`,
+    true,
+  ),
+  gaussian: tex(
+    String.raw`\gamma(h) = c_0 + (s - c_0)\left[\,1 - e^{-3h^2/a^2}\,\right]`,
+    true,
+  ),
+};
+
+const sym = (s: string) => tex(s);
+---
+
+<MainLayout title="Geostatistics, visually | Kassahun Aweke Arega">
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </Fragment>
+
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <section class="section geo" id="geo" lang="en">
+        <div class="geo-top">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" data-lang="en" aria-pressed="true">EN</button>
+            <button type="button" data-lang="am" aria-pressed="false">አማርኛ</button>
+          </div>
+        </div>
+
+        <h2 data-t="pageTitle">{T.pageTitle}</h2>
+        <p class="geo-intro" data-t="intro" set:html={T.intro} />
+
+        <div class="geo-toolbar">
+          <button type="button" class="geo-btn" id="new-wells" data-t="newWells">{T.newWells}</button>
+          <div class="legend">
+            <span class="legend-title" data-t="legendTitle">{T.legendTitle}</span>
+            <span data-t="legendShallow">{T.legendShallow}</span>
+            <span class="legend-bar" aria-hidden="true"></span>
+            <span data-t="legendDeep">{T.legendDeep}</span>
+          </div>
+        </div>
+
+        <!-- LESSON 1 -->
+        <article class="lesson" id="lesson1">
+          <h3 data-t="l1Title">{T.l1Title}</h3>
+          <p class="plain" data-t="l1Plain" set:html={T.l1Plain} />
+          <p class="try"><b data-t="tryIt">{T.tryIt}</b>: <span data-t="l1Try">{T.l1Try}</span></p>
+          <div class="viz">
+            <div class="panel"><canvas id="l1-map" class="map-canvas"></canvas></div>
+            <div class="panel">
+              <canvas id="l1-plot" class="plot-canvas"></canvas>
+              <p class="caption" data-t="l1Plot">{T.l1Plot}</p>
+            </div>
+          </div>
+          <p class="readout" id="l1-readout" aria-live="polite"></p>
+          <div class="math">
+            <h4 data-t="mathTitle">{T.mathTitle}</h4>
+            <div class="eq" set:html={eq.l1a} />
+            <div class="eq" set:html={eq.l1b} />
+            <p class="in-words" data-t="inWords">{T.inWords}</p>
+            <dl class="symbols">
+              <dt set:html={sym("h")} /><dd data-t="l1h">{T.l1h}</dd>
+              <dt set:html={sym("(x, y)")} /><dd data-t="l1xy">{T.l1xy}</dd>
+              <dt set:html={sym("z")} /><dd data-t="l1z">{T.l1z}</dd>
+              <dt set:html={sym(String.raw`\Delta z`)} /><dd data-t="l1dz">{T.l1dz}</dd>
+            </dl>
+          </div>
+        </article>
+
+        <!-- LESSON 2 -->
+        <article class="lesson" id="lesson2">
+          <h3 data-t="l2Title">{T.l2Title}</h3>
+          <p class="plain" data-t="l2Plain" set:html={T.l2Plain} />
+          <p class="try"><b data-t="tryIt">{T.tryIt}</b>: <span data-t="l2Try">{T.l2Try}</span></p>
+          <div class="controls">
+            <label class="slider">
+              <span data-t="l2Band">{T.l2Band}</span>
+              <input type="range" id="l2-band" min="0" max="11" step="1" value="2" />
+            </label>
+            <label class="check">
+              <input type="checkbox" id="l2-cloud" />
+              <span data-t="l2Cloud">{T.l2Cloud}</span>
+            </label>
+          </div>
+          <div class="viz">
+            <div class="panel"><canvas id="l2-map" class="map-canvas"></canvas></div>
+            <div class="panel"><canvas id="l2-plot" class="plot-canvas"></canvas></div>
+          </div>
+          <p class="readout" id="l2-readout" aria-live="polite"></p>
+          <p class="notice" data-t="l2Notice">{T.l2Notice}</p>
+          <div class="math">
+            <h4 data-t="mathTitle">{T.mathTitle}</h4>
+            <div class="eq" set:html={eq.l2} />
+            <p class="in-words" data-t="inWords">{T.inWords}</p>
+            <dl class="symbols">
+              <dt set:html={sym(String.raw`\gamma(h)`)} /><dd data-t="l2gamma">{T.l2gamma}</dd>
+              <dt set:html={sym("N(h)")} /><dd data-t="l2N">{T.l2N}</dd>
+              <dt set:html={sym(String.raw`\big[z(\mathbf{x}_i) - z(\mathbf{x}_i + h)\big]^2`)} /><dd data-t="l2diff">{T.l2diff}</dd>
+              <dt set:html={sym(String.raw`\tfrac{1}{2}`)} /><dd data-t="l2half">{T.l2half}</dd>
+            </dl>
+          </div>
+        </article>
+
+        <!-- LESSON 3 -->
+        <article class="lesson" id="lesson3">
+          <h3 data-t="l3Title">{T.l3Title}</h3>
+          <p class="plain" data-t="l3Plain" set:html={T.l3Plain} />
+          <p class="try"><b data-t="tryIt">{T.tryIt}</b>: <span data-t="l3Try">{T.l3Try}</span></p>
+          <div class="controls">
+            <div class="model-pick" role="radiogroup">
+              <span data-t="l3Model">{T.l3Model}</span>
+              <label><input type="radio" name="l3-model" value="spherical" checked /> <span data-t="l3Spherical">{T.l3Spherical}</span></label>
+              <label><input type="radio" name="l3-model" value="exponential" /> <span data-t="l3Exponential">{T.l3Exponential}</span></label>
+              <label><input type="radio" name="l3-model" value="gaussian" /> <span data-t="l3Gaussian">{T.l3Gaussian}</span></label>
+            </div>
+            <label class="slider">
+              <span><span data-t="l3Nugget">{T.l3Nugget}</span> <span class="sym" set:html={sym("c_0")} /> = <output id="l3-nugget-v"></output></span>
+              <input type="range" id="l3-nugget" min="0" max="1" step="0.001" value="0" />
+            </label>
+            <label class="slider">
+              <span><span data-t="l3Sill">{T.l3Sill}</span> <span class="sym" set:html={sym("s")} /> = <output id="l3-sill-v"></output></span>
+              <input type="range" id="l3-sill" min="0" max="1" step="0.001" value="0.5" />
+            </label>
+            <label class="slider">
+              <span><span data-t="l3Range">{T.l3Range}</span> <span class="sym" set:html={sym("a")} /> = <output id="l3-range-v"></output></span>
+              <input type="range" id="l3-range" min="0.3" max="8" step="0.05" value="3" />
+            </label>
+            <button type="button" class="geo-btn" id="l3-fit" data-t="l3Fit">{T.l3Fit}</button>
+          </div>
+          <div class="viz viz-single">
+            <div class="panel"><canvas id="l3-plot" class="plot-canvas"></canvas></div>
+          </div>
+          <p class="readout" id="l3-readout" aria-live="polite"></p>
+          <div class="math">
+            <h4 data-t="mathTitle">{T.mathTitle}</h4>
+            <div class="eq" data-model="spherical" set:html={eq.spherical} />
+            <div class="eq" data-model="exponential" hidden set:html={eq.exponential} />
+            <div class="eq" data-model="gaussian" hidden set:html={eq.gaussian} />
+            <p class="in-words" data-t="inWords">{T.inWords}</p>
+            <dl class="symbols">
+              <dt set:html={sym("c_0")} /><dd><b data-t="l3Nugget">{T.l3Nugget}</b>: <span data-t="l3NuggetHelp">{T.l3NuggetHelp}</span></dd>
+              <dt set:html={sym("s")} /><dd><b data-t="l3Sill">{T.l3Sill}</b>: <span data-t="l3SillHelp">{T.l3SillHelp}</span></dd>
+              <dt set:html={sym("a")} /><dd><b data-t="l3Range">{T.l3Range}</b>: <span data-t="l3RangeHelp">{T.l3RangeHelp}</span></dd>
+              <dt set:html={sym("h")} /><dd data-t="l3h">{T.l3h}</dd>
+            </dl>
+          </div>
+          <p class="next" data-t="l3Next" set:html={T.l3Next} />
+        </article>
+      </section>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  import "../../scripts/geostatistics.ts";
+</script>
+
+<style>
+  .geo {
+    max-width: 1100px;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  .geo:lang(am),
+  .geo:lang(am) button,
+  .geo:lang(am) input {
+    font-family: "Noto Sans Ethiopic", "Segoe UI", Arial, sans-serif;
+  }
+  .geo h2 {
+    margin-bottom: 20px;
+  }
+  .geo-top {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .lang-switch {
+    display: inline-flex;
+    border: 1px solid #c9d6e3;
+    border-radius: 999px;
+    overflow: hidden;
+    background: white;
+  }
+  .lang-switch button {
+    border: 0;
+    background: transparent;
+    padding: 6px 16px;
+    font: inherit;
+    font-family: "Noto Sans Ethiopic", "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    color: #173753;
+  }
+  .lang-switch button[aria-pressed="true"] {
+    background: #173753;
+    color: white;
+  }
+  .geo-intro {
+    max-width: 760px;
+    margin: 0 auto 28px;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  .geo-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 28px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .geo-btn {
+    background: #173753;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .geo-btn:hover {
+    background: #0b5c8e;
+  }
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #444;
+  }
+  .legend-title {
+    font-weight: 600;
+    color: #173753;
+  }
+  .legend-bar {
+    width: 140px;
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #2c7bb6, #abd9e9, #ffffbf, #fdae61, #d7191c);
+  }
+  .lesson {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+  .lesson h3 {
+    color: #0b5c8e;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  .plain {
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+  }
+  .try {
+    background: #eef5fb;
+    border-left: 4px solid #0b5c8e;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 28px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .slider {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    flex: 1;
+  }
+  .slider input {
+    width: 100%;
+    accent-color: #0b5c8e;
+  }
+  .check,
+  .model-pick label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .model-pick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+    width: 100%;
+  }
+  .model-pick > span {
+    font-weight: 600;
+  }
+  .viz {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .viz-single {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .panel canvas {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+    background: #fbfcfe;
+    border: 1px solid #e3e9f0;
+  }
+  .map-canvas {
+    aspect-ratio: 1 / 1;
+    cursor: crosshair;
+    touch-action: manipulation;
+  }
+  .plot-canvas {
+    aspect-ratio: 1 / 1;
+  }
+  .viz-single .plot-canvas {
+    aspect-ratio: 16 / 10;
+  }
+  .caption {
+    font-size: 0.88rem;
+    color: #555;
+    margin-top: 6px;
+  }
+  .readout {
+    margin-top: 14px;
+    min-height: 1.6em;
+    font-size: 1.05rem;
+  }
+  .readout :global(.exception) {
+    display: inline-block;
+    margin-top: 4px;
+    color: #a14a12;
+  }
+  .notice {
+    margin-top: 8px;
+    color: #444;
+    font-style: italic;
+  }
+  .math {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #e3e9f0;
+  }
+  .math h4 {
+    color: #173753;
+    margin-bottom: 4px;
+  }
+  .eq {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 0;
+  }
+  .in-words {
+    font-weight: 600;
+    color: #173753;
+    margin: 6px 0;
+  }
+  .symbols {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 18px;
+    align-items: baseline;
+  }
+  .symbols dt {
+    text-align: right;
+  }
+  .next {
+    margin-top: 22px;
+    padding: 12px 14px;
+    background: #f7f8fb;
+    border-radius: 8px;
+  }
+  @media (max-width: 760px) {
+    .geo {
+      padding: 40px 16px;
+    }
+    .geo h2 {
+      font-size: 30px;
+    }
+    .lesson {
+      padding: 20px 16px;
+    }
+    .viz {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

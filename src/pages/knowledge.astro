@@ -10,7 +10,8 @@ const topics = [
   },
   {
     title: "Geostatistics",
-    description: "Add notes, tutorials, or resources on this topic.",
+    description: "Interactive lessons: spatial similarity, the variogram, and variogram models. In English and Amharic.",
+    link: "/learn/geostatistics",
   },
   {
     title: "Machine Learning",
@@ -30,12 +31,19 @@ const topics = [
       <section class="section">
         <h2>Knowledge Hub</h2>
         <div class="cards">
-          {topics.map((topic) => (
-            <div class="card">
-              <h3>{topic.title}</h3>
-              <p>{topic.description}</p>
-            </div>
-          ))}
+          {topics.map((topic) =>
+            topic.link ? (
+              <a class="card" href={topic.link}>
+                <h3>{topic.title} →</h3>
+                <p>{topic.description}</p>
+              </a>
+            ) : (
+              <div class="card">
+                <h3>{topic.title}</h3>
+                <p>{topic.description}</p>
+              </div>
+            )
+          )}
         </div>
       </section>
     </div>
