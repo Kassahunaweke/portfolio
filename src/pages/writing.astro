@@ -2,14 +2,16 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 
-// TODO: replace with your real writing/blog posts
-const posts = [
-  {
-    title: "Example Post Title",
-    description: "Add a short summary of this post.",
-    link: "#",
-  },
-];
+// Every .md file in src/pages/writing/ shows up here automatically (newest first).
+const files = Object.values(import.meta.glob("./writing/*.md", { eager: true })) as any[];
+const posts = files
+  .map((f) => ({
+    title: f.frontmatter.title,
+    description: f.frontmatter.description ?? "",
+    date: f.frontmatter.date ?? "",
+    link: f.url,
+  }))
+  .sort((a, b) => String(b.date).localeCompare(String(a.date)));
 ---
 
 <MainLayout title="Writing | Kassahun Aweke Arega">
