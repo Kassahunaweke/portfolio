@@ -1,32 +1,384 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
+import { categories, commercial } from "../data/software";
 
-// TODO: replace with your real software/tools
-const tools = [
-  {
-    name: "Example Tool Name",
-    description: "Add a short description of what this software/tool does.",
-    link: "#",
-  },
-];
+// The software list itself lives in src/data/software.ts.
+const badgeClass = (l: string) => "badge " + l.toLowerCase().replace(/[^a-z]+/g, "-");
 ---
 
 <MainLayout title="Software | Kassahun Aweke Arega">
   <div class="container">
     <Sidebar />
     <div class="content">
-      <section class="section">
-        <h2>Software</h2>
-        <div class="cards">
-          {tools.map((tool) => (
-            <a class="card" href={tool.link} target="_blank" rel="noopener">
-              <h3>{tool.name}</h3>
-              <p>{tool.description}</p>
-            </a>
-          ))}
+      <section class="section sw">
+        <h2>Software for hydrogeology</h2>
+        <p class="intro">
+          Essential tools for groundwater work, with a focus on <b>free and open-source</b> software.
+          Each entry links to the official website and download page, and short setup guides are below.
+        </p>
+
+        <div class="start">
+          <h3>Where to start</h3>
+          <ul>
+            <li><b>Build a groundwater model with menus:</b> <a href="#guide-modelmuse">ModelMuse + MODFLOW 6</a> (Windows)</li>
+            <li><b>Model and analyse with code:</b> <a href="#guide-python">Python + FloPy</a> (any computer)</li>
+            <li><b>Maps and spatial data:</b> <a href="#gis">QGIS</a></li>
+            <li><b>Soil water and recharge:</b> <a href="#unsaturated">HYDRUS-1D</a></li>
+            <li><b>Calibration and uncertainty:</b> <a href="#calibration">PEST++ and pyEMU</a></li>
+          </ul>
         </div>
+
+        <nav class="jump" aria-label="Categories">
+          {categories.map((c) => <a href={`#${c.id}`}>{c.title}</a>)}
+          <a href="#guides">Setup guides</a>
+        </nav>
+
+        {categories.map((c) => (
+          <section class="cat" id={c.id}>
+            <h3>{c.title}</h3>
+            {c.intro && <p class="cat-intro">{c.intro}</p>}
+            <div class="tools">
+              {c.tools.map((t) => (
+                <article class="tool">
+                  <h4>{t.name}</h4>
+                  <p class="meta">
+                    <span class={badgeClass(t.licence)}>{t.licence}</span>
+                    <span class="platforms">{t.platforms}</span>
+                  </p>
+                  <p>{t.what}</p>
+                  {t.note && <p class="note">{t.note}</p>}
+                  <p class="links">
+                    <a href={t.website} target="_blank" rel="noopener">Website ↗</a>
+                    {t.download && <a href={t.download} target="_blank" rel="noopener">Download ↗</a>}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <section class="cat" id="guides">
+          <h3>Setup guides</h3>
+
+          <details class="guide" id="guide-modelmuse" open>
+            <summary>ModelMuse + MODFLOW 6 on Windows</summary>
+            <ol>
+              <li>
+                <b>Install ModelMuse.</b> On the{" "}
+                <a href="https://water.usgs.gov/water-resources/software/ModelMuse/" target="_blank" rel="noopener">USGS ModelMuse downloads page</a>,
+                download the <b>64-bit installer</b> (<code>ModelMuseSetup64_….exe</code>) and run it.
+                The installer is the method USGS recommends.
+              </li>
+              <li>
+                <b>Download MODFLOW 6.</b> From the{" "}
+                <a href="https://github.com/MODFLOW-ORG/modflow6/releases/latest" target="_blank" rel="noopener">latest MODFLOW 6 release</a>,
+                download the file ending in <code>_win64.zip</code> and unzip it to a folder with no spaces in its path,
+                for example <code>C:\MODFLOW\</code>. The program is <code>bin\mf6.exe</code> inside that folder.
+              </li>
+              <li><b>Start ModelMuse.</b> In the <i>Start-Up</i> window, choose to create a new model and define the grid (rows, columns, layers, cell size).</li>
+              <li><b>Choose MODFLOW 6:</b> <span class="menu">Model → Model Selection → MODFLOW 6</span>.</li>
+              <li><b>Tell ModelMuse where MODFLOW is:</b> <span class="menu">Model → MODFLOW Program Locations</span>, then select the <code>mf6.exe</code> file from step 2.</li>
+              <li><b>Switch on the packages you need</b> (e.g. constant heads, recharge, wells): <span class="menu">Model → MODFLOW Packages and Programs</span>.</li>
+              <li><b>Run the model</b> with the <i>Run MODFLOW 6</i> toolbar button. Save the project when asked; the ModelMonitor window shows the run.</li>
+              <li><b>See the heads:</b> <span class="menu">File → Import → Model Results</span>, select the head file and colour or contour the grid with it.</li>
+            </ol>
+            <p class="tip">
+              Next step: follow the MODFLOW 6 example in the{" "}
+              <a href="https://water.usgs.gov/water-resources/software/ModelMuse/Help/" target="_blank" rel="noopener">ModelMuse online help</a>
+              {" "}(Examples/Tutorials).
+            </p>
+          </details>
+
+          <details class="guide" id="guide-python">
+            <summary>Python for hydrogeology (Windows, macOS, Linux)</summary>
+            <ol>
+              <li>
+                <b>Install Miniforge</b> from{" "}
+                <a href="https://conda-forge.org/download/" target="_blank" rel="noopener">conda-forge.org/download</a>
+                {" "}(on Windows: <code>Miniforge3-Windows-x86_64.exe</code>, default options).
+              </li>
+              <li><b>Open a terminal:</b> on Windows, open <i>Miniforge Prompt</i> from the Start menu.</li>
+              <li>
+                <b>Create an environment</b> with the main packages:
+                <pre><code>conda create -n hydro -c conda-forge python=3.12 numpy scipy pandas matplotlib jupyterlab flopy
+conda activate hydro</code></pre>
+              </li>
+              <li>
+                <b>Install MODFLOW 6 and related programs</b> (FloPy downloads them for you):
+                <pre><code>get-modflow :flopy</code></pre>
+              </li>
+              <li>
+                <b>Optional extras</b> (time series, geostatistics, water chemistry, PEST++):
+                <pre><code>pip install pastas gstools pykrige wqchartpy pyemu
+get-pestpp :pyemu</code></pre>
+              </li>
+              <li>
+                <b>Check and start:</b>
+                <pre><code>python -c "import flopy; print(flopy.__version__)"
+jupyter lab</code></pre>
+              </li>
+            </ol>
+            <p class="tip">Each time you open a new terminal, run <code>conda activate hydro</code> first.</p>
+          </details>
+
+          <details class="guide" id="guide-hydrus">
+            <summary>HYDRUS-1D on Windows</summary>
+            <ol>
+              <li>
+                On the <a href="https://www.pc-progress.com/en/Default.aspx?H1d-downloads" target="_blank" rel="noopener">HYDRUS-1D downloads page</a>,
+                download the latest installer (<code>Hydrus1D_4.17….exe</code>) and run it.
+              </li>
+              <li>Open HYDRUS-1D and start from one of the{" "}
+                <a href="https://www.pc-progress.com/en/Default.aspx?H1d-tutorials" target="_blank" rel="noopener">tutorials</a>
+                {" "}(e.g. infiltration into a soil profile).
+              </li>
+            </ol>
+            <p class="tip">HYDRUS-1D 4.17 is free but no longer developed; new 1-D features are in HYDRUS version 5 (see the PC-Progress website).</p>
+          </details>
+
+          <details class="guide" id="guide-qgis">
+            <summary>QGIS</summary>
+            <ol>
+              <li>On <a href="https://qgis.org/download/" target="_blank" rel="noopener">qgis.org/download</a>, choose the <b>Long Term Release (LTR)</b> for your system and install it.</li>
+              <li>Add data with <span class="menu">Layer → Add Layer</span> (shapefiles, GeoTIFF rasters, CSV well lists with X/Y columns).</li>
+              <li>Extra tools: <span class="menu">Plugins → Manage and Install Plugins</span>.</li>
+            </ol>
+          </details>
+        </section>
+
+        <section class="cat" id="commercial">
+          <h3>Commercial alternatives</h3>
+          <p>
+            Widely used in consulting; check with the vendor for academic or student licences:
+            {commercial.map((c, i) => (
+              <>
+                <a href={c.website} target="_blank" rel="noopener">{c.name}</a>{i < commercial.length - 1 ? " · " : "."}
+              </>
+            ))}
+          </p>
+        </section>
+
+        <section class="cat" id="on-this-site">
+          <h3>Tools on this site</h3>
+          <div class="tools">
+            <a class="tool tool-link" href="/learn/geostatistics">
+              <h4>Geostatistics, visually →</h4>
+              <p>Interactive lessons: variogram, kriging and simulation, in English and Amharic.</p>
+            </a>
+            <a class="tool tool-link" href="/knowledge/data-worth">
+              <h4>Monitoring design explorer →</h4>
+              <p>Data worth in a MODFLOW 6 aquifer: where should the next measurement go?</p>
+            </a>
+          </div>
+        </section>
+
+        <p class="checked">Links checked in November 2026. Versions change often: always download from the official page.</p>
       </section>
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .sw {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  .sw h2 {
+    margin-bottom: 18px;
+  }
+  .intro {
+    max-width: 780px;
+    margin: 0 auto 30px;
+    text-align: center;
+    font-size: 1.08rem;
+  }
+  .start {
+    background: white;
+    border-left: 4px solid #0b5c8e;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    padding: 18px 24px;
+    margin-bottom: 26px;
+  }
+  .start h3,
+  .cat h3 {
+    color: #173753;
+    margin-bottom: 8px;
+  }
+  .start ul {
+    padding-left: 20px;
+  }
+  a {
+    color: #0b5c8e;
+  }
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .jump a {
+    background: #e6f0f8;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.88rem;
+    text-decoration: none;
+  }
+  .cat {
+    margin-top: 40px;
+    scroll-margin-top: 16px;
+  }
+  .cat h3 {
+    font-size: 1.45rem;
+    border-bottom: 2px solid #e3e9f0;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+  }
+  .cat-intro {
+    margin-bottom: 14px;
+  }
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .tool {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tool h4 {
+    color: #0b5c8e;
+    font-size: 1.15rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+  .badge {
+    border-radius: 999px;
+    padding: 1px 10px;
+    font-weight: 600;
+  }
+  .badge.public-domain {
+    background: #e3f4ea;
+    color: #1d6b3a;
+  }
+  .badge.open-source {
+    background: #e6f0f8;
+    color: #0b5c8e;
+  }
+  .badge.free-download {
+    background: #f3eefb;
+    color: #5b3a9a;
+  }
+  .badge.commercial {
+    background: #fdf0e6;
+    color: #a14a12;
+  }
+  .platforms {
+    color: #666;
+  }
+  .note {
+    font-size: 0.9rem;
+    color: #555;
+    background: #f7f8fb;
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+  .links {
+    margin-top: auto;
+    display: flex;
+    gap: 16px;
+    font-weight: 600;
+  }
+  .links a {
+    text-decoration: none;
+  }
+  .links a:hover {
+    text-decoration: underline;
+  }
+  .tool-link {
+    text-decoration: none;
+    color: #222;
+    transition: transform 0.2s;
+  }
+  .tool-link:hover {
+    transform: translateY(-4px);
+  }
+  .guide {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    padding: 16px 22px;
+    margin-bottom: 14px;
+  }
+  .guide summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #173753;
+    font-size: 1.08rem;
+  }
+  .guide ol {
+    margin: 14px 0 6px;
+    padding-left: 22px;
+  }
+  .guide li {
+    margin-bottom: 10px;
+  }
+  .menu {
+    font-weight: 600;
+    background: #eef1f5;
+    border-radius: 4px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+  code {
+    background: #eef1f5;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: #0f2233;
+    color: #e8f0f8;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    overflow-x: auto;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+  .tip {
+    font-size: 0.92rem;
+    color: #444;
+  }
+  .checked {
+    margin-top: 40px;
+    font-size: 0.88rem;
+    color: #666;
+    text-align: center;
+  }
+  @media (max-width: 760px) {
+    .sw {
+      padding: 40px 16px;
+    }
+    .sw h2 {
+      font-size: 30px;
+    }
+    .menu {
+      white-space: normal;
+    }
+  }
+</style>
