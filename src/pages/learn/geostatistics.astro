@@ -31,7 +31,29 @@ const eq = {
   ),
 };
 
+const eq2 = {
+  l4a: tex(
+    String.raw`\hat z(\mathbf{x}_0) = \sum_{i=1}^{n} \lambda_i \, z(\mathbf{x}_i), \qquad \sum_{i=1}^{n} \lambda_i = 1`,
+    true,
+  ),
+  l4b: tex(
+    String.raw`\sum_{j=1}^{n} \lambda_j \, \gamma(\mathbf{x}_i - \mathbf{x}_j) + \mu = \gamma(\mathbf{x}_i - \mathbf{x}_0), \quad i = 1, \dots, n`,
+    true,
+  ),
+  l4c: tex(
+    String.raw`\sigma_K^2(\mathbf{x}_0) = \sum_{i=1}^{n} \lambda_i \, \gamma(\mathbf{x}_i - \mathbf{x}_0) + \mu`,
+    true,
+  ),
+  l5a: tex(
+    String.raw`z^{(\ell)}(\mathbf{x}_0) = \hat z_{SK}(\mathbf{x}_0) + \sigma_{SK}(\mathbf{x}_0)\,\varepsilon`,
+    true,
+  ),
+  l5b: tex(String.raw`\varepsilon \sim \mathcal{N}(0, 1)`, true),
+};
+
 const sym = (s: string) => tex(s);
+
+const lessons = [1, 2, 3, 4, 5].map((n) => ({ n, key: `l${n}Title`, title: (T as Record<string, string>)[`l${n}Title`] }));
 ---
 
 <MainLayout title="Geostatistics, visually | Kassahun Aweke Arega">
@@ -68,6 +90,15 @@ const sym = (s: string) => tex(s);
           </div>
         </div>
 
+        <nav class="toc" aria-labelledby="toc-title">
+          <h3 id="toc-title" data-t="navContents">{T.navContents}</h3>
+          <ul>
+            {lessons.map((l) => (
+              <li><a href={`#lesson${l.n}`} data-t={l.key}>{l.title}</a></li>
+            ))}
+          </ul>
+        </nav>
+
         <!-- LESSON 1 -->
         <article class="lesson" id="lesson1">
           <h3 data-t="l1Title">{T.l1Title}</h3>
@@ -93,6 +124,10 @@ const sym = (s: string) => tex(s);
               <dt set:html={sym(String.raw`\Delta z`)} /><dd data-t="l1dz">{T.l1dz}</dd>
             </dl>
           </div>
+          <nav class="lesson-nav">
+            <span></span>
+            <a class="nav-next" href="#lesson2"><span data-t="navNext">{T.navNext}</span>: <span data-t="l2Title">{T.l2Title}</span> →</a>
+          </nav>
         </article>
 
         <!-- LESSON 2 -->
@@ -127,6 +162,10 @@ const sym = (s: string) => tex(s);
               <dt set:html={sym(String.raw`\tfrac{1}{2}`)} /><dd data-t="l2half">{T.l2half}</dd>
             </dl>
           </div>
+          <nav class="lesson-nav">
+            <a class="nav-prev" href="#lesson1">← <span data-t="navPrev">{T.navPrev}</span></a>
+            <a class="nav-next" href="#lesson3"><span data-t="navNext">{T.navNext}</span>: <span data-t="l3Title">{T.l3Title}</span> →</a>
+          </nav>
         </article>
 
         <!-- LESSON 3 -->
@@ -172,7 +211,108 @@ const sym = (s: string) => tex(s);
               <dt set:html={sym("h")} /><dd data-t="l3h">{T.l3h}</dd>
             </dl>
           </div>
-          <p class="next" data-t="l3Next" set:html={T.l3Next} />
+          <nav class="lesson-nav">
+            <a class="nav-prev" href="#lesson2">← <span data-t="navPrev">{T.navPrev}</span></a>
+            <a class="nav-next" href="#lesson4"><span data-t="navNext">{T.navNext}</span>: <span data-t="l4Title">{T.l4Title}</span> →</a>
+          </nav>
+        </article>
+
+        <!-- LESSON 4 -->
+        <article class="lesson" id="lesson4">
+          <h3 data-t="l4Title">{T.l4Title}</h3>
+          <p class="plain" data-t="l4Plain" set:html={T.l4Plain} />
+          <p class="try"><b data-t="tryIt">{T.tryIt}</b>: <span data-t="l4Try">{T.l4Try}</span></p>
+          <p class="uses" id="l4-uses"></p>
+          <div class="viz">
+            <div class="panel">
+              <div class="panel-head view-pick" role="radiogroup">
+                <span data-t="show">{T.show}</span>
+                <label><input type="radio" name="l4-view" value="kriging" checked /> <span data-t="l4Kriging">{T.l4Kriging}</span></label>
+                <label><input type="radio" name="l4-view" value="idw" /> <span data-t="l4Idw">{T.l4Idw}</span></label>
+                <label><input type="radio" name="l4-view" value="truth" /> <span data-t="l4Truth">{T.l4Truth}</span></label>
+              </div>
+              <canvas id="l4-map" class="map-canvas"></canvas>
+            </div>
+            <div class="panel">
+              <div class="panel-head unc-legend">
+                <b data-t="l4Unc">{T.l4Unc}</b>
+                <span data-t="l4Low">{T.l4Low}</span>
+                <span class="unc-bar" aria-hidden="true"></span>
+                <span data-t="l4High">{T.l4High}</span>
+              </div>
+              <canvas id="l4-unc" class="map-canvas"></canvas>
+            </div>
+          </div>
+          <p class="readout" id="l4-readout" aria-live="polite"></p>
+          <p class="readout" id="l4-error"></p>
+          <p class="caption" data-t="l4TruthNote">{T.l4TruthNote}</p>
+          <p class="notice" data-t="l4Notice">{T.l4Notice}</p>
+          <div class="math">
+            <h4 data-t="mathTitle">{T.mathTitle}</h4>
+            <div class="eq" set:html={eq2.l4a} />
+            <div class="eq" set:html={eq2.l4b} />
+            <div class="eq" set:html={eq2.l4c} />
+            <p class="in-words" data-t="inWords">{T.inWords}</p>
+            <dl class="symbols">
+              <dt set:html={sym(String.raw`\hat z(\mathbf{x}_0)`)} /><dd data-t="l4zhat">{T.l4zhat}</dd>
+              <dt set:html={sym(String.raw`\lambda_i`)} /><dd data-t="l4lambda">{T.l4lambda}</dd>
+              <dt set:html={sym(String.raw`\textstyle\sum \lambda_i = 1`)} /><dd data-t="l4sum">{T.l4sum}</dd>
+              <dt set:html={sym(String.raw`\gamma(\mathbf{x}_i - \mathbf{x}_j)`)} /><dd data-t="l4gamma">{T.l4gamma}</dd>
+              <dt set:html={sym(String.raw`\mu`)} /><dd data-t="l4mu">{T.l4mu}</dd>
+              <dt set:html={sym(String.raw`\sigma_K^2`)} /><dd data-t="l4var">{T.l4var}</dd>
+            </dl>
+          </div>
+          <nav class="lesson-nav">
+            <a class="nav-prev" href="#lesson3">← <span data-t="navPrev">{T.navPrev}</span></a>
+            <a class="nav-next" href="#lesson5"><span data-t="navNext">{T.navNext}</span>: <span data-t="l5Title">{T.l5Title}</span> →</a>
+          </nav>
+        </article>
+
+        <!-- LESSON 5 -->
+        <article class="lesson" id="lesson5">
+          <h3 data-t="l5Title">{T.l5Title}</h3>
+          <p class="plain" data-t="l5Plain" set:html={T.l5Plain} />
+          <p class="try"><b data-t="tryIt">{T.tryIt}</b>: <span data-t="l5Try">{T.l5Try}</span></p>
+          <p class="uses" id="l5-uses"></p>
+          <div class="controls">
+            <button type="button" class="geo-btn" id="l5-another" data-t="l5Another">{T.l5Another}</button>
+            <button type="button" class="geo-btn geo-btn-light" id="l5-more" data-t="l5More">{T.l5More}</button>
+          </div>
+          <div class="viz">
+            <div class="panel">
+              <div class="panel-head"><b id="l5-current"></b></div>
+              <canvas id="l5-sim" class="map-canvas"></canvas>
+            </div>
+            <div class="panel">
+              <div class="panel-head view-pick" role="radiogroup">
+                <span data-t="show">{T.show}</span>
+                <label><input type="radio" name="l5-view" value="kriging" checked /> <span data-t="l4Kriging">{T.l4Kriging}</span></label>
+                <label><input type="radio" name="l5-view" value="average" /> <span data-t="l5Average">{T.l5Average}</span></label>
+                <label><input type="radio" name="l5-view" value="truth" /> <span data-t="l4Truth">{T.l4Truth}</span></label>
+              </div>
+              <canvas id="l5-cmp" class="map-canvas"></canvas>
+            </div>
+          </div>
+          <p class="readout" id="l5-readout" aria-live="polite"></p>
+          <p class="notice" data-t="l5Notice">{T.l5Notice}</p>
+          <div class="math">
+            <h4 data-t="mathTitle">{T.mathTitle}</h4>
+            <div class="eq" set:html={eq2.l5a} />
+            <div class="eq" set:html={eq2.l5b} />
+            <p class="in-words" data-t="inWords">{T.inWords}</p>
+            <dl class="symbols">
+              <dt set:html={sym(String.raw`z^{(\ell)}(\mathbf{x}_0)`)} /><dd data-t="l5zl">{T.l5zl}</dd>
+              <dt set:html={sym(String.raw`\hat z_{SK}(\mathbf{x}_0)`)} /><dd data-t="l5zsk">{T.l5zsk}</dd>
+              <dt set:html={sym(String.raw`\sigma_{SK}(\mathbf{x}_0)`)} /><dd data-t="l5sd">{T.l5sd}</dd>
+              <dt set:html={sym(String.raw`\varepsilon`)} /><dd data-t="l5eps">{T.l5eps}</dd>
+            </dl>
+            <p class="sgs" data-t="l5Sgs" set:html={T.l5Sgs} />
+          </div>
+          <p class="next" data-t="l5End">{T.l5End}</p>
+          <nav class="lesson-nav">
+            <a class="nav-prev" href="#lesson4">← <span data-t="navPrev">{T.navPrev}</span></a>
+            <a class="nav-next" href="#geo">↑ <span data-t="navContents">{T.navContents}</span></a>
+          </nav>
         </article>
       </section>
     </div>
@@ -398,6 +538,93 @@ const sym = (s: string) => tex(s);
   }
   .symbols dt {
     text-align: right;
+  }
+  .toc {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+    padding: 22px 28px;
+    margin-bottom: 40px;
+  }
+  .toc h3 {
+    color: #173753;
+    margin-bottom: 8px;
+  }
+  .toc ul {
+    list-style: none;
+    display: grid;
+    gap: 4px;
+  }
+  .toc a,
+  .lesson-nav a {
+    color: #0b5c8e;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .toc a:hover,
+  .lesson-nav a:hover {
+    text-decoration: underline;
+  }
+  .lesson {
+    scroll-margin-top: 16px;
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e3e9f0;
+  }
+  .lesson-nav .nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+  .uses {
+    font-size: 0.92rem;
+    color: #555;
+    margin-bottom: 14px;
+  }
+  .panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    min-height: 2.2em;
+    margin-bottom: 6px;
+    font-size: 0.92rem;
+  }
+  .view-pick label {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .view-pick > span {
+    font-weight: 600;
+  }
+  .unc-bar {
+    width: 100px;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #ffffff, #dadaeb, #9e9ac8, #6a51a3, #3f007d);
+    border: 1px solid #ddd;
+  }
+  .geo-btn-light {
+    background: white;
+    color: #173753;
+    border: 2px solid #173753;
+  }
+  .geo-btn-light:hover {
+    background: #eef5fb;
+  }
+  .geo-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .sgs {
+    margin-top: 12px;
   }
   .next {
     margin-top: 22px;
