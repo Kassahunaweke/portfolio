@@ -2,6 +2,7 @@
 layout: ../../layouts/PostLayout.astro
 title: "The River, the Cattle, and the Water Beneath Our Feet"
 description: "A childhood memory of drinking upstream from the cattle, a new well, and how I was watching groundwater stories long before I knew what groundwater was."
+category: "story"
 date: "2026-11-09"
 ---
 

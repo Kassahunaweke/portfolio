@@ -2,6 +2,7 @@
 layout: ../../layouts/PostLayout.astro
 title: "The Well That Closed Before Everyone Got Water"
 description: "A line of jerrycans, a hand pump, and the sun going down: how a childhood queue for water was a visible expression of a hidden groundwater system."
+category: "story"
 date: "2026-11-09"
 ---
 

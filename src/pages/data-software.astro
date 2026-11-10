@@ -2,21 +2,72 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 import { categories, commercial } from "../data/software";
+import { dataGroups, myDatasets } from "../data/opendata";
 
-// The software list itself lives in src/data/software.ts.
+// The lists live in src/data/software.ts and src/data/opendata.ts.
 const badgeClass = (l: string) => "badge " + l.toLowerCase().replace(/[^a-z]+/g, "-");
 ---
 
-<MainLayout title="Software | Kassahun Aweke Arega">
+<MainLayout title="Data & Software | Kassahun Aweke Arega">
   <div class="container">
     <Sidebar />
     <div class="content">
       <section class="section sw">
-        <h2>Software for hydrogeology</h2>
+        <h2>Data &amp; Software</h2>
         <p class="intro">
-          Essential tools for groundwater work, with a focus on <b>free and open-source</b> software.
-          Each entry links to the official website and download page, and short setup guides are below.
+          Open data and essential software for groundwater work, with a focus on <b>free and open</b> resources.
+          Each entry links to its official source.
         </p>
+
+        <nav class="parts" aria-label="Sections">
+          <a href="#data"><b>Data</b><span>Open data sources · My datasets</span></a>
+          <a href="#software"><b>Software</b><span>Tools by category · Setup guides</span></a>
+        </nav>
+
+        <!-- ============================== DATA ============================== -->
+        <h2 class="part" id="data">Data</h2>
+
+        <nav class="jump" aria-label="Data categories">
+          {dataGroups.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+          <a href="#my-datasets">My datasets</a>
+        </nav>
+
+        {dataGroups.map((g) => (
+          <section class="cat" id={g.id}>
+            <h3>{g.title}</h3>
+            <div class="tools">
+              {g.sources.map((s) => (
+                <article class="tool">
+                  <h4>{s.name}</h4>
+                  <p class="meta"><span class="platforms">{s.coverage}</span></p>
+                  <p>{s.what}</p>
+                  <p class="links"><a href={s.website} target="_blank" rel="noopener">Open data source ↗</a></p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <section class="cat" id="my-datasets">
+          <h3>My datasets</h3>
+          {myDatasets.length ? (
+            <div class="tools">
+              {myDatasets.map((d) => (
+                <article class="tool">
+                  <h4>{d.name}</h4>
+                  {d.licence && <p class="meta"><span class="badge open-source">{d.licence}</span></p>}
+                  <p>{d.what}</p>
+                  <p class="links"><a href={d.doi} target="_blank" rel="noopener">Dataset (DOI) ↗</a></p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p class="empty">Datasets from my work will be shared here as they are published.</p>
+          )}
+        </section>
+
+        <!-- ============================ SOFTWARE ============================ -->
+        <h2 class="part" id="software">Software</h2>
 
         <div class="start">
           <h3>Where to start</h3>
@@ -192,6 +243,44 @@ jupyter lab</code></pre>
     margin: 0 auto 30px;
     text-align: center;
     font-size: 1.08rem;
+  }
+  .parts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .parts a {
+    display: flex;
+    flex-direction: column;
+    background: #173753;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: transform 0.2s;
+  }
+  .parts a:hover {
+    transform: translateY(-3px);
+  }
+  .parts b {
+    font-size: 1.2rem;
+  }
+  .parts span {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+  .sw h2.part {
+    font-size: 2rem;
+    text-align: left;
+    margin: 56px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #173753;
+    scroll-margin-top: 16px;
+  }
+  .empty {
+    color: #555;
+    font-style: italic;
   }
   .start {
     background: white;

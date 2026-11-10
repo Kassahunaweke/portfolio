@@ -3,15 +3,34 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 
 // Every .md file in src/pages/writing/ shows up here automatically (newest first).
+// In each file's front matter, set   category: "science"   or   category: "story"
+// (no category = story).
 const files = Object.values(import.meta.glob("./writing/*.md", { eager: true })) as any[];
 const posts = files
   .map((f) => ({
     title: f.frontmatter.title,
     description: f.frontmatter.description ?? "",
     date: f.frontmatter.date ?? "",
+    category: f.frontmatter.category === "science" ? "science" : "story",
     link: f.url,
   }))
   .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+const sections = [
+  {
+    id: "science",
+    title: "Science notes",
+    intro: "Methods explained simply, summaries of papers, and thoughts on groundwater research.",
+    empty: "The first science notes are on their way.",
+  },
+  {
+    id: "stories",
+    key: "story",
+    title: "Stories & reflections",
+    intro: "Personal stories, memories, and reflections on water, people and society.",
+    empty: "",
+  },
+].map((s) => ({ ...s, posts: posts.filter((p) => p.category === (s.key ?? s.id)) }));
 ---
 
 <MainLayout title="Writing | Kassahun Aweke Arega">
@@ -20,15 +39,70 @@ const posts = files
     <div class="content">
       <section class="section">
         <h2>Writing</h2>
-        <div class="cards">
-          {posts.map((post) => (
-            <a class="card" href={post.link}>
-              <h3>{post.title}</h3>
-              <p>{post.description}</p>
-            </a>
-          ))}
-        </div>
+        <nav class="writing-tabs" aria-label="Writing sections">
+          {sections.map((s) => <a href={`#${s.id}`}>{s.title} <span>({s.posts.length})</span></a>)}
+        </nav>
+
+        {sections.map((s) => (
+          <section class="writing-group" id={s.id}>
+            <h3>{s.title}</h3>
+            <p class="group-intro">{s.intro}</p>
+            {s.posts.length ? (
+              <div class="cards">
+                {s.posts.map((post) => (
+                  <a class="card" href={post.link}>
+                    <h3>{post.title}</h3>
+                    <p>{post.description}</p>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p class="empty">{s.empty}</p>
+            )}
+          </section>
+        ))}
       </section>
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .writing-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: -20px 0 20px;
+  }
+  .writing-tabs a {
+    background: #e6f0f8;
+    color: #0b5c8e;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .writing-tabs span {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  .writing-group {
+    margin-top: 40px;
+    scroll-margin-top: 16px;
+  }
+  .writing-group > h3 {
+    font-size: 1.6rem;
+    color: #173753;
+    border-bottom: 2px solid #e2e6ea;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+  .group-intro {
+    color: #555;
+    margin-bottom: 22px;
+  }
+  .empty {
+    color: #555;
+    font-style: italic;
+  }
+</style>

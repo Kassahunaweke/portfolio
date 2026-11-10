@@ -2,27 +2,67 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 
-// TODO: replace with your real research projects/descriptions
-const projects = [
+// ------------------------------------------------------------------------------------
+// EDIT THE TEXT HERE. Each axis: a title and one or more paragraphs.
+// Keep it at the level of themes and methods, not unpublished ideas or results.
+// `links` (optional) point to related outputs: papers, posters, resources on this site.
+// ------------------------------------------------------------------------------------
+const intro =
+  "My research is about groundwater under uncertainty: how much water enters aquifers, how it moves through heterogeneous rocks and sediments, and how confident we can be in the models we use to manage it. I combine geostatistics, numerical groundwater models, data assimilation and machine learning, and I apply them from data-rich settings in Canada to data-scarce regions in Ethiopia. My work is organised along four axes.";
+
+const axes = [
   {
-    title: "Recharge realization",
-    image: "/images/hero/Recharge.png",
-    description: "Add a short description of this project or study.",
+    id: "recharge",
+    title: "Groundwater recharge and its uncertainty",
+    paragraphs: [
+      "Recharge is the least constrained term of most groundwater budgets. It cannot be measured directly over large areas, and it changes with climate, snow, soils and land cover. Rather than producing a single recharge map, I treat recharge as an uncertain, spatially variable quantity, so that its uncertainty can be carried into groundwater models and the decisions based on them.",
+      "My doctoral work develops this approach in a cold, snow-influenced setting: the Harricana sub-watershed in the Abitibi–Témiscamingue region of Québec.",
+    ],
+    links: [] as { label: string; href: string }[],
   },
   {
-    title: "Stochastic ln(K) field",
-    image: "/images/hero/stochastic.png",
-    description: "Add a short description of this project or study.",
+    id: "uncertainty",
+    title: "Geostatistics and uncertainty in groundwater models",
+    paragraphs: [
+      "Aquifer properties such as hydraulic conductivity vary strongly in space and are known only at a few points. I use geostatistical simulation to describe this heterogeneity through many equally plausible realisations, and inverse methods (ensemble data assimilation and parameter estimation) to make these realisations consistent with observations such as heads and flows.",
+      "A related question is which data are worth collecting: which measurement, at which location, would most reduce the uncertainty of the prediction that matters for a decision.",
+    ],
+    links: [
+      { label: "Learning resource: data worth in groundwater modelling", href: "/knowledge/data-worth" },
+    ],
   },
   {
-    title: "DeepONet architecture",
-    image: "/images/hero/Deeponet.png",
-    description: "Add a short description of this project or study.",
+    id: "surrogates",
+    title: "Surrogate models and machine learning",
+    paragraphs: [
+      "Uncertainty analysis requires running a groundwater model hundreds or thousands of times, which is often too slow with physically based models alone. I explore surrogate models, including neural-network approaches, that learn to reproduce a simulator quickly enough to make ensemble and probabilistic analyses practical.",
+      "I am also interested in how machine learning compares with, and can complement, classical geostatistics for mapping spatial variables such as precipitation.",
+    ],
+    links: [] as { label: string; href: string }[],
   },
   {
-    title: "Wellhead protection area",
-    image: "/images/hero/protection_area.png",
-    description: "Add a short description of this project or study.",
+    id: "remote-sensing",
+    title: "Groundwater in data-scarce regions",
+    paragraphs: [
+      "In many regions, including much of Ethiopia, groundwater is the main source of drinking water but monitoring networks are sparse. I use satellite observations, such as GRACE gravity data, together with climate and land-surface datasets to assess groundwater storage change at regional scale.",
+      "This work connects to applied projects on groundwater suitability, hydrogeological mapping and managed aquifer recharge for climate-resilient water supply.",
+    ],
+    links: [
+      { label: "Paper: groundwater storage in Ethiopia from GRACE (Environmental Earth Sciences, 2024)", href: "https://doi.org/10.1007/s12665-024-11508-2" },
+    ],
+  },
+];
+
+const extras = [
+  {
+    id: "open",
+    title: "Open resources",
+    text: "I share learning material and curated tools so that others can learn and reuse the methods:",
+    links: [
+      { label: "Knowledge Hub", href: "/knowledge" },
+      { label: "Data & Software", href: "/data-software" },
+      { label: "Publications & scientific contributions (CV)", href: "/cv#publications" },
+    ],
   },
 ];
 ---
@@ -31,18 +71,150 @@ const projects = [
   <div class="container">
     <Sidebar />
     <div class="content">
-      <section class="section">
-        <h2>Research</h2>
-        <div class="cards">
-          {projects.map((project) => (
-            <div class="card">
-              <img src={project.image} alt={project.title} style="width:100%; border-radius:10px; margin-bottom:15px;" />
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-            </div>
-          ))}
+      <section class="section research">
+        <div class="layout">
+          <article class="main">
+            <h2>Research</h2>
+            <p class="lead">{intro}</p>
+
+            {axes.map((a, i) => (
+              <section class="axis" id={a.id}>
+                <h3><span class="num">Axis {i + 1}</span> {a.title}</h3>
+                {a.paragraphs.map((p) => <p>{p}</p>)}
+                {a.links.length > 0 && (
+                  <ul class="related">
+                    {a.links.map((l) => (
+                      <li>
+                        <a href={l.href} {...(l.href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}>{l.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            ))}
+
+            {extras.map((x) => (
+              <section class="axis" id={x.id}>
+                <h3>{x.title}</h3>
+                <p>{x.text}</p>
+                <ul class="related">
+                  {x.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+                </ul>
+              </section>
+            ))}
+          </article>
+
+          <nav class="toc" aria-label="On this page">
+            <p class="toc-title">On this page</p>
+            <ol>
+              {axes.map((a, i) => <li><a href={`#${a.id}`}>Axis {i + 1}: {a.title}</a></li>)}
+              {extras.map((x) => <li class="plain"><a href={`#${x.id}`}>{x.title}</a></li>)}
+            </ol>
+          </nav>
         </div>
       </section>
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .research {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 760px) 230px;
+    gap: 48px;
+    justify-content: center;
+    align-items: start;
+  }
+  .main h2 {
+    text-align: left;
+    margin-bottom: 18px;
+  }
+  .lead {
+    font-size: 1.1rem;
+    line-height: 1.75;
+    margin-bottom: 10px;
+  }
+  .axis {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #dde4ec;
+    scroll-margin-top: 16px;
+  }
+  .axis h3 {
+    color: #173753;
+    font-size: 1.45rem;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+  .num {
+    display: block;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0b5c8e;
+    margin-bottom: 2px;
+  }
+  .axis p {
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  .related {
+    list-style: none;
+    padding: 0;
+  }
+  .related li::before {
+    content: "→ ";
+    color: #0b5c8e;
+  }
+  .related a,
+  .toc a {
+    color: #0b5c8e;
+  }
+  .toc {
+    position: sticky;
+    top: 24px;
+    font-size: 0.9rem;
+    border-left: 2px solid #dde4ec;
+    padding-left: 16px;
+  }
+  .toc-title {
+    font-weight: 700;
+    color: #173753;
+    margin-bottom: 8px;
+  }
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .toc a {
+    text-decoration: none;
+  }
+  .toc a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 1100px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .toc {
+      position: static;
+      order: -1;
+      margin-bottom: 8px;
+    }
+  }
+  @media (max-width: 760px) {
+    .research {
+      padding: 40px 16px;
+    }
+    .main h2 {
+      font-size: 30px;
+    }
+  }
+</style>

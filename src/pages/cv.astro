@@ -176,8 +176,10 @@ const memberships = [
           </div>
         </div>
 
-        <div class="cv-section">
-          <h3>Publications</h3>
+        <div class="cv-section" id="publications">
+          <h3>Publications &amp; Scientific Contributions</h3>
+
+          <h4 class="cv-subhead">Journal articles</h4>
           <ul class="simple-list">
             {publications.map((pub) => (
               <li>
@@ -185,17 +187,13 @@ const memberships = [
               </li>
             ))}
           </ul>
-        </div>
 
-        <div class="cv-section">
-          <h3>Conference &amp; Professional Presentations</h3>
+          <h4 class="cv-subhead">Conference &amp; professional presentations</h4>
           <ul class="simple-list">
             {presentations.map((p) => <li>{p}</li>)}
           </ul>
-        </div>
 
-        <div class="cv-section">
-          <h3>Peer Review</h3>
+          <h4 class="cv-subhead">Peer review</h4>
           <ul class="simple-list">
             {peerReview.map((r) => <li>{r}</li>)}
           </ul>
@@ -229,3 +227,17 @@ const memberships = [
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .cv-subhead {
+    color: #0b5c8e;
+    font-size: 1.05rem;
+    margin: 22px 0 10px;
+  }
+  .cv-subhead:first-of-type {
+    margin-top: 0;
+  }
+  #publications {
+    scroll-margin-top: 16px;
+  }
+</style>

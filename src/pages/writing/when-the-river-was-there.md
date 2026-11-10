@@ -2,6 +2,7 @@
 layout: ../../layouts/PostLayout.astro
 title: "When the River Was There, But You Could Not Safely Reach It"
 description: "In places affected by conflict, the river does not have to disappear for water access to disappear. Sometimes it is the journey to the water that has changed."
+category: "story"
 date: "2026-11-09"
 ---
 
