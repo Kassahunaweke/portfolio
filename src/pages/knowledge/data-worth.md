@@ -64,7 +64,11 @@ Both types of data reduce the uncertainty of the **conductivity field**, but onl
 
 Click on the map to add a K measurement or a head, and watch the uncertainty of the outflow and of the K field change. Then switch to **"Best next location"** to see where one more measurement would help most.
 
-![Worth of one more head (left) and one more K measurement (right) for the outflow](/knowledge/data-worth-2d/figures/worth-maps-head-vs-k.png)
+<figure class="worth-figure">
+  <div class="panel-labels"><span>One more <b>head</b></span><span>One more <b>K measurement</b></span></div>
+  <img src="/knowledge/data-worth-2d/figures/worth-maps-head-vs-k.png" alt="Worth of one more head (left) and one more K measurement (right) for the outflow" />
+  <figcaption>Worth of one more head (left) and one more K measurement (right) for the outflow, before any data. Darker = the measurement would remove more of the outflow uncertainty. This is the map the explorer shows under “Best next location”.</figcaption>
+</figure>
 
 **Things to try:**
 
