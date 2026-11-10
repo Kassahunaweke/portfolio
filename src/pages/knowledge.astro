@@ -2,16 +2,33 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 
-// TODO: replace with your real knowledge hub topics/notes
-const topics = [
+type Topic = {
+  title: string;
+  description: string;
+  link?: string;
+  image?: string;
+  tags?: string[];
+};
+
+// Cards with a `link` open a resource; add `image` and `tags` to show them on the card.
+const topics: Topic[] = [
   {
-    title: "Groundwater Modelling",
-    description: "Add notes, tutorials, or resources on this topic.",
+    title: "Where should we measure? Data worth in groundwater modelling",
+    description:
+      "Why some measurements reduce prediction uncertainty and others don't, with an interactive explorer to design a monitoring network.",
+    link: "/knowledge/data-worth",
+    image: "/knowledge/data-worth-2d/figures/worth-maps-head-vs-k.png",
+    tags: ["groundwater", "uncertainty", "data worth", "MODFLOW 6"],
   },
   {
     title: "Geostatistics",
-    description: "Interactive lessons: spatial similarity, the variogram, and variogram models. In English and Amharic.",
+    description:
+      "Interactive lessons from spatial similarity to the variogram, kriging and simulation. In English and Amharic.",
     link: "/learn/geostatistics",
+  },
+  {
+    title: "Groundwater Modelling",
+    description: "Add notes, tutorials, or resources on this topic.",
   },
   {
     title: "Machine Learning",
@@ -31,21 +48,39 @@ const topics = [
       <section class="section">
         <h2>Knowledge Hub</h2>
         <div class="cards">
-          {topics.map((topic) =>
-            topic.link ? (
-              <a class="card" href={topic.link}>
-                <h3>{topic.title} →</h3>
+          {topics.map((topic) => {
+            const inner = (
+              <>
+                {topic.image && <img class="card-img" src={topic.image} alt="" loading="lazy" />}
+                <h3>{topic.title}{topic.link && " →"}</h3>
                 <p>{topic.description}</p>
-              </a>
+                {topic.tags && <p class="card-tags">{topic.tags.join(" · ")}</p>}
+              </>
+            );
+            return topic.link ? (
+              <a class="card" href={topic.link}>{inner}</a>
             ) : (
-              <div class="card">
-                <h3>{topic.title}</h3>
-                <p>{topic.description}</p>
-              </div>
-            )
-          )}
+              <div class="card">{inner}</div>
+            );
+          })}
         </div>
       </section>
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .card-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .card-tags {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #0b5c8e;
+  }
+</style>

@@ -1,0 +1,261 @@
+---
+// Template for Knowledge Hub learning resources (Markdown pages in src/pages/knowledge/).
+// Front matter used:
+//   title, summary, level, tags: [..]
+//   downloads: [{ label, href, note }]   -> shown in the "Downloads" box
+// Interactive explorers are embedded in the article body with:
+//   <iframe class="resource-embed" src="..." title="..." loading="lazy"></iframe>
+import MainLayout from "./MainLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+
+const { frontmatter } = Astro.props;
+const tags: string[] = frontmatter.tags ?? [];
+const downloads: { label: string; href: string; note?: string }[] = frontmatter.downloads ?? [];
+---
+
+<MainLayout title={`${frontmatter.title} | Kassahun Aweke Arega`}>
+  <div class="container">
+    <Sidebar />
+    <div class="content">
+      <article class="section resource">
+        <p class="back"><a href="/knowledge">&larr; Knowledge Hub</a></p>
+        <h1>{frontmatter.title}</h1>
+        {frontmatter.summary && <p class="summary">{frontmatter.summary}</p>}
+        <div class="meta">
+          {frontmatter.level && <span class="level">Level: {frontmatter.level}</span>}
+          {tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+
+        {downloads.length > 0 && (
+          <aside class="downloads" aria-labelledby="downloads-title">
+            <h2 id="downloads-title">Downloads</h2>
+            <ul>
+              {downloads.map((d) => (
+                <li>
+                  <a href={d.href} download>{d.label}</a>
+                  {d.note && <span class="note"> — {d.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
+        <div class="body">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Embedded explorers: keep them in the site's light theme, and size them to their content
+  // (their panels stack on phones, so the height changes with screen width).
+  document.querySelectorAll<HTMLIFrameElement>("iframe.resource-embed").forEach((frame) => {
+    const fit = () => {
+      try {
+        const doc = frame.contentDocument;
+        if (!doc?.documentElement) return;
+        doc.documentElement.dataset.theme = "light";
+        // body height = content height (the html element would also count the frame's own height)
+        if (doc.body) frame.style.height = `${Math.ceil(doc.body.getBoundingClientRect().height) + 4}px`;
+      } catch {
+        /* cross-origin: keep the default height */
+      }
+    };
+    frame.addEventListener("load", () => {
+      fit();
+      try {
+        const doc = frame.contentDocument;
+        if (doc?.body) new ResizeObserver(fit).observe(doc.body);
+      } catch {}
+    });
+    window.addEventListener("resize", fit);
+  });
+</script>
+
+<style>
+  .resource {
+    padding-left: 5%;
+    padding-right: 5%;
+    line-height: 1.75;
+  }
+  /* Text stays at a reading width; embedded explorers may use the full width. */
+  .resource > :global(*),
+  .body > :global(*) {
+    max-width: 860px;
+  }
+  .body > :global(.resource-embed) {
+    max-width: 1150px;
+  }
+  .back a {
+    color: #0b5c8e;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  h1 {
+    color: #173753;
+    font-size: 2.2rem;
+    line-height: 1.25;
+    margin: 12px 0 10px;
+  }
+  .summary {
+    font-size: 1.12rem;
+    color: #444;
+    margin-bottom: 12px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 26px;
+  }
+  .level {
+    font-weight: 600;
+    color: #173753;
+    margin-right: 6px;
+  }
+  .tag {
+    background: #e6f0f8;
+    color: #0b5c8e;
+    border-radius: 999px;
+    padding: 2px 12px;
+    font-size: 0.85rem;
+  }
+  .downloads {
+    background: white;
+    border-left: 4px solid #0b5c8e;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    padding: 16px 22px;
+    margin-bottom: 32px;
+  }
+  .resource .downloads h2 {
+    font-size: 1.15rem;
+    text-align: left;
+    margin: 0 0 6px;
+    color: #173753;
+  }
+  .downloads ul {
+    padding-left: 20px;
+  }
+  .downloads a {
+    color: #0b5c8e;
+    font-weight: 600;
+  }
+  .note {
+    color: #555;
+  }
+
+  /* Markdown content */
+  .body :global(h2) {
+    font-size: 1.55rem;
+    text-align: left;
+    color: #0b5c8e;
+    margin: 38px 0 12px;
+  }
+  .body :global(h3) {
+    color: #173753;
+    margin: 24px 0 8px;
+  }
+  .body :global(p),
+  .body :global(ul),
+  .body :global(ol),
+  .body :global(table),
+  .body :global(blockquote) {
+    margin-bottom: 1rem;
+  }
+  .body :global(ul),
+  .body :global(ol) {
+    padding-left: 24px;
+  }
+  .body :global(li) {
+    margin-bottom: 4px;
+  }
+  .body :global(a) {
+    color: #0b5c8e;
+  }
+  .body :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 8px auto;
+    border-radius: 8px;
+  }
+  .body :global(blockquote) {
+    background: #eef5fb;
+    border-left: 4px solid #0b5c8e;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 1.05rem;
+    overflow-x: auto;
+  }
+  .body :global(table) {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .body :global(th),
+  .body :global(td) {
+    border-bottom: 1px solid #e3e9f0;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .body :global(th) {
+    color: #173753;
+    background: #f1f5f9;
+  }
+  .body :global(code) {
+    background: #eef1f5;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+  }
+  .body :global(hr) {
+    border: 0;
+    border-top: 1px solid #d9e1ea;
+    margin: 36px 0 16px;
+  }
+  .body :global(hr + p) {
+    font-size: 0.92rem;
+    color: #555;
+  }
+  .body :global(.open-explorer) {
+    display: inline-block;
+    background: #173753;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
+  .body :global(.resource-embed) {
+    display: block;
+    width: 100%;
+    height: 900px;
+    border: 0;
+    border-radius: 12px;
+    margin: 18px 0 8px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  }
+  .body :global(.embed-note) {
+    display: none;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  @media (max-width: 760px) {
+    .body :global(.embed-note) {
+      display: block;
+    }
+    .resource {
+      padding: 40px 16px;
+    }
+    h1 {
+      font-size: 1.7rem;
+    }
+  }
+</style>
