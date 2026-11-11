@@ -18,7 +18,10 @@ const downloads: { label: string; href: string; note?: string }[] = frontmatter.
     <Sidebar />
     <div class="content">
       <article class="section resource">
-        <p class="back"><a href="/knowledge">&larr; Knowledge Hub</a></p>
+        <p class="back">
+          <a href="/knowledge">&larr; Knowledge Hub</a>
+          {frontmatter.topic && <> / <a href={`/knowledge#${frontmatter.topicId ?? ""}`}>{frontmatter.topic}</a></>}
+        </p>
         <h1>{frontmatter.title}</h1>
         {frontmatter.summary && <p class="summary">{frontmatter.summary}</p>}
         <div class="meta">

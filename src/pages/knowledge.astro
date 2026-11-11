@@ -2,43 +2,53 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 
-type Topic = {
+type Resource = {
   title: string;
   description: string;
-  link?: string;
+  link: string;
   image?: string;
   tags?: string[];
 };
+type Topic = { id: string; title: string; intro: string; resources: Resource[] };
 
-// Cards with a `link` open a resource; add `image` and `tags` to show them on the card.
+// Knowledge Hub, organised by topic. To add a resource, put it in the `resources` list of its topic.
+// Topics with no resources yet are listed under "Coming soon".
 const topics: Topic[] = [
   {
-    title: "Where should we measure? Data worth in groundwater modelling",
-    description:
-      "Why some measurements reduce prediction uncertainty and others don't, with an interactive explorer to design a monitoring network.",
-    link: "/knowledge/data-worth",
-    image: "/knowledge/data-worth-2d/figures/worth-maps-head-vs-k.png",
-    tags: ["groundwater", "uncertainty", "data worth", "MODFLOW 6"],
+    id: "groundwater-modelling",
+    title: "Groundwater modelling",
+    intro: "Numerical models of groundwater flow, their uncertainty, and how to design data collection.",
+    resources: [
+      {
+        title: "Where should we measure? Data worth in groundwater modelling",
+        description:
+          "Why some measurements reduce prediction uncertainty and others don't, with an interactive explorer to design a monitoring network.",
+        link: "/knowledge/data-worth",
+        image: "/knowledge/data-worth-2d/figures/worth-maps-head-vs-k.png",
+        tags: ["groundwater", "uncertainty", "data worth", "MODFLOW 6"],
+      },
+    ],
   },
   {
+    id: "geostatistics",
     title: "Geostatistics",
-    description:
-      "Interactive lessons from spatial similarity to the variogram, kriging and simulation. In English and Amharic.",
-    link: "/learn/geostatistics",
+    intro: "Describing and mapping spatial variability, from the variogram to kriging and simulation.",
+    resources: [
+      {
+        title: "Geostatistics, visually",
+        description:
+          "Interactive lessons from spatial similarity to the variogram, kriging and simulation. In English and Amharic.",
+        link: "/learn/geostatistics",
+        tags: ["variogram", "kriging", "simulation", "interactive"],
+      },
+    ],
   },
-  {
-    title: "Groundwater Modelling",
-    description: "Add notes, tutorials, or resources on this topic.",
-  },
-  {
-    title: "Machine Learning",
-    description: "Add notes, tutorials, or resources on this topic.",
-  },
-  {
-    title: "Scientific Computing",
-    description: "Add notes, tutorials, or resources on this topic.",
-  },
+  { id: "machine-learning", title: "Machine learning", intro: "", resources: [] },
+  { id: "scientific-computing", title: "Scientific computing", intro: "", resources: [] },
 ];
+
+const active = topics.filter((t) => t.resources.length);
+const upcoming = topics.filter((t) => !t.resources.length);
 ---
 
 <MainLayout title="Knowledge Hub | Kassahun Aweke Arega">
@@ -47,29 +57,80 @@ const topics: Topic[] = [
     <div class="content">
       <section class="section">
         <h2>Knowledge Hub</h2>
-        <div class="cards">
-          {topics.map((topic) => {
-            const inner = (
-              <>
-                {topic.image && <img class="card-img" src={topic.image} alt="" loading="lazy" />}
-                <h3>{topic.title}{topic.link && " →"}</h3>
-                <p>{topic.description}</p>
-                {topic.tags && <p class="card-tags">{topic.tags.join(" · ")}</p>}
-              </>
-            );
-            return topic.link ? (
-              <a class="card" href={topic.link}>{inner}</a>
-            ) : (
-              <div class="card">{inner}</div>
-            );
-          })}
-        </div>
+        <p class="hub-intro">Learning resources, organised by topic: explanations, interactive tools and code you can reuse.</p>
+
+        <nav class="topic-nav" aria-label="Topics">
+          {active.map((t) => <a href={`#${t.id}`}>{t.title}</a>)}
+        </nav>
+
+        {active.map((t) => (
+          <section class="topic" id={t.id}>
+            <h3>{t.title}</h3>
+            <p class="topic-intro">{t.intro}</p>
+            <div class="cards">
+              {t.resources.map((r) => (
+                <a class="card" href={r.link}>
+                  {r.image && <img class="card-img" src={r.image} alt="" loading="lazy" />}
+                  <h3>{r.title} →</h3>
+                  <p>{r.description}</p>
+                  {r.tags && <p class="card-tags">{r.tags.join(" · ")}</p>}
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {upcoming.length > 0 && (
+          <p class="upcoming">
+            <b>Coming soon:</b> {upcoming.map((t) => t.title).join(" · ")}
+          </p>
+        )}
       </section>
     </div>
   </div>
 </MainLayout>
 
 <style>
+  .hub-intro {
+    max-width: 760px;
+    margin: -24px auto 24px;
+    text-align: center;
+    color: #444;
+    font-size: 1.05rem;
+  }
+  .topic-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .topic-nav a {
+    background: #e6f0f8;
+    color: #0b5c8e;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .topic {
+    margin-top: 44px;
+    scroll-margin-top: 16px;
+  }
+  .topic > h3 {
+    font-size: 1.6rem;
+    color: #173753;
+    border-bottom: 2px solid #e2e6ea;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+  .topic-intro {
+    color: #555;
+    margin-bottom: 22px;
+  }
+  .topic .cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 360px));
+  }
   .card-img {
     display: block;
     width: 100%;
@@ -82,5 +143,17 @@ const topics: Topic[] = [
     margin-top: 12px;
     font-size: 0.85rem;
     color: #0b5c8e;
+  }
+  .upcoming {
+    margin-top: 48px;
+    padding: 14px 18px;
+    background: white;
+    border-radius: 10px;
+    color: #444;
+  }
+  @media (max-width: 760px) {
+    .topic .cards {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

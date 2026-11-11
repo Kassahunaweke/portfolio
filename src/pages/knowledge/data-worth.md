@@ -4,6 +4,8 @@ title: "Where should we measure? Data worth in groundwater modelling"
 summary: "A hands-on introduction to data worth: why some measurements reduce prediction uncertainty and others don't, with an interactive explorer to design a monitoring network."
 tags: [groundwater, uncertainty, data worth, MODFLOW 6, monitoring design]
 level: "Graduate / practitioner"
+topic: "Groundwater modelling"
+topicId: "groundwater-modelling"
 downloads:
   - label: "monitoring_design.ipynb"
     href: "/knowledge/data-worth-2d/code/monitoring_design.ipynb"
