@@ -3,6 +3,9 @@ layout: ../../layouts/PostLayout.astro
 title: "The Well That Closed Before Everyone Got Water"
 description: "A line of jerrycans, a hand pump, and the sun going down: how a childhood queue for water was a visible expression of a hidden groundwater system."
 category: "story"
+image: "/images/writing/community-water-pump-tigray.jpg"
+imageAlt: "Women at a community hand pump with yellow jerrycans, in a stone-walled enclosure in Tigray, Ethiopia"
+imageCredit: "A community hand pump, Tigray, Ethiopia. Photo: <a href=\"https://commons.wikimedia.org/wiki/File:Community_Water_Pump,_Tigray_(10607692933).jpg\" target=\"_blank\" rel=\"noopener\">Rod Waddington</a>, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\" target=\"_blank\" rel=\"noopener\">CC BY-SA 2.0</a>, via Wikimedia Commons."
 date: "2026-11-09"
 ---
 
@@ -33,6 +36,11 @@ The containers became placeholders.
 You could leave your jerrycan there and wait.
 
 And wait.
+
+<figure class="post-photo inline">
+  <img src="/images/writing/jerrycan-queue-mingkamen.jpg" alt="Two women seated in front of a long line of yellow jerrycans waiting to be filled with water" loading="lazy" />
+  <figcaption>Jerrycans holding a place in the queue for water: Dabora Alek (right) had waited two hours. Mingkamen, South Sudan, 2014. Photo: <a href="https://commons.wikimedia.org/wiki/File:Dabora_Alek,_right,_has_waited_two_hours_to_collect_water_(12451605083).jpg" target="_blank" rel="noopener">Oxfam East Africa</a>, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>, via Wikimedia Commons.</figcaption>
+</figure>
 
 Children played around the queue.
 

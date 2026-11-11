@@ -13,6 +13,12 @@ const { frontmatter } = Astro.props;
         <p><a href="/writing">&larr; Back to Writing</a></p>
         <h2>{frontmatter.title}</h2>
         {frontmatter.date && <p class="post-date">{frontmatter.date}</p>}
+        {frontmatter.image && (
+          <figure class="post-photo">
+            <img src={frontmatter.image} alt={frontmatter.imageAlt ?? ""} />
+            {frontmatter.imageCredit && <figcaption set:html={frontmatter.imageCredit} />}
+          </figure>
+        )}
         <slot />
       </article>
     </div>
@@ -24,4 +30,10 @@ const { frontmatter } = Astro.props;
   .post-date { opacity: 0.7; margin-top: -0.5rem; }
   .post :global(p) { margin: 0 0 1.1rem; }
   .post :global(img) { max-width: 100%; height: auto; }
+  /* Photos: the top photo (front matter) and photos placed between paragraphs (<figure class="post-photo inline">) */
+  .post :global(.post-photo) { margin: 0.5rem 0 2rem; }
+  .post :global(.post-photo.inline) { max-width: 520px; margin: 1.5rem auto 2rem; }
+  .post :global(.post-photo img) { display: block; width: 100%; border-radius: 10px; }
+  .post :global(.post-photo figcaption) { font-size: 0.85rem; color: #555; margin-top: 6px; line-height: 1.5; }
+  .post :global(.post-photo figcaption a) { color: #0b5c8e; }
 </style>

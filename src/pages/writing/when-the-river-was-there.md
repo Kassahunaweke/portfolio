@@ -3,6 +3,9 @@ layout: ../../layouts/PostLayout.astro
 title: "When the River Was There, But You Could Not Safely Reach It"
 description: "In places affected by conflict, the river does not have to disappear for water access to disappear. Sometimes it is the journey to the water that has changed."
 category: "story"
+image: "/images/writing/water-collection-shire-2021.jpg"
+imageAlt: "Children and adults with jerrycans collecting water in a camp for displaced people in Shire, Tigray, June 2021"
+imageCredit: "Collecting drinking water in a camp for displaced people, Shire, Tigray, Ethiopia, June 2021. Photo: <a href=\"https://commons.wikimedia.org/wiki/File:People_collect_drinking_water_in_one_of_the_many_camps_in_Shire,_June_11,_2021.jpg\" target=\"_blank\" rel=\"noopener\">Yan Boechat, VOA</a> (public domain), via Wikimedia Commons."
 date: "2026-11-09"
 ---
 

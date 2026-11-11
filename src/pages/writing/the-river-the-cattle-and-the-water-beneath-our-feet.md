@@ -3,6 +3,9 @@ layout: ../../layouts/PostLayout.astro
 title: "The River, the Cattle, and the Water Beneath Our Feet"
 description: "A childhood memory of drinking upstream from the cattle, a new well, and how I was watching groundwater stories long before I knew what groundwater was."
 category: "story"
+image: "/images/writing/drinking-water-sof-omer.jpg"
+imageAlt: "People filling yellow jerrycans in a shallow river while cattle stand in the water, Sof Omer, Ethiopia"
+imageCredit: "People and cattle sharing a river, Sof Omer, Ethiopia. Photo: <a href=\"https://commons.wikimedia.org/wiki/File:Drinking_Water,_Sof_Omer,_Ethiopia_(10775648214).jpg\" target=\"_blank\" rel=\"noopener\">Rod Waddington</a>, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\" target=\"_blank\" rel=\"noopener\">CC BY-SA 2.0</a>, via Wikimedia Commons."
 date: "2026-11-09"
 ---
 
@@ -39,6 +42,11 @@ I remember the excitement around it. A machine was going into the ground, and pe
 Water.
 
 Groundwater.
+
+<figure class="post-photo inline">
+  <img src="/images/writing/well-drilling-fiche-2012.jpg" alt="Water and mud shooting up from the ground beneath a drilling rig as a new well reaches water, Fiche, Ethiopia" loading="lazy" />
+  <figcaption>The moment a new well reaches water: drilling in Fiche, Ethiopia, December 2012. Photo: <a href="https://commons.wikimedia.org/wiki/File:US,_Ethiopian_militaries_partner_in_water_well_drilling_exercise_121219-F-VS255-481.jpg" target="_blank" rel="noopener">Christopher Ruano, U.S. Air Force</a> (public domain), via Wikimedia Commons.</figcaption>
+</figure>
 
 For a community accustomed to going to the river, this was different.
 
